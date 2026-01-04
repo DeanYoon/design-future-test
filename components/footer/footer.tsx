@@ -10,6 +10,8 @@ export function Footer() {
         <FooterNav />
       </div>
       <FooterSocial />
+
+
     </footer>
   );
 }

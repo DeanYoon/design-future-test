@@ -2,8 +2,8 @@ import { Instagram } from "lucide-react";
 
 export function FooterSocial() {
   return (
-    <div className="flex flex-col md:flex-row justify-center items-start gap-4 pt-8 text-gray-400">
-      <div className="flex gap-4">
+    <div className="flex flex-col md:flex-row justify-center md:justify-between items-start gap-4 pt-8 text-gray-400">
+      <div className="flex gap-4 order-1 md:order-2">
         <a
           href="https://instagram.com"
           target="_blank"
@@ -36,7 +36,7 @@ export function FooterSocial() {
           </svg>
         </a>
       </div>
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-gray-600 order-2 md:order-1">
         © 2025 Material Bank Japan. All rights reserved
       </div>
     </div>

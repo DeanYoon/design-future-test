@@ -1,13 +1,13 @@
 import Link from "next/link";
 
-const linkClass = "text-sm text-gray-700 hover:text-gray-900 transition-colors block";
+const linkClass = "text-sm md:text-base text-gray-700 hover:text-gray-900 transition-colors block";
 
 export function FooterNav() {
   return (
     <nav className="py-8 border-b border-gray-200">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
-          <h3 className="text-xs font-medium text-gray-400 mb-4">
+          <h3 className="text-xs md:text-base font-medium text-gray-400 mb-4">
             サンプルを探す
           </h3>
           <div className="space-y-2">
@@ -30,7 +30,7 @@ export function FooterNav() {
         </div>
 
         <div>
-          <h3 className="text-xs font-medium text-gray-400 mb-4">
+          <h3 className="text-xs md:text-base font-medium text-gray-400 mb-4">
             私たちについて
           </h3>
           <div className="space-y-2">
@@ -50,7 +50,7 @@ export function FooterNav() {
         </div>
 
         <div>
-          <h3 className="text-xs font-medium text-gray-400 mb-4">
+          <h3 className="text-xs md:text-base font-medium text-gray-400 mb-4">
             アカウント
           </h3>
           <div className="space-y-2">
@@ -67,7 +67,7 @@ export function FooterNav() {
         </div>
 
         <div>
-          <h3 className="text-xs font-medium text-gray-400 mb-4">サポート</h3>
+          <h3 className="text-xs md:text-base font-medium text-gray-400 mb-4">サポート</h3>
           <div className="space-y-2">
             <Link href="/faq" className={linkClass}>
               よくある質問
