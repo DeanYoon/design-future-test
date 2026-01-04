@@ -32,7 +32,7 @@ export function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-center gap-1 md:gap-2 mt-8">
+    <div className="flex items-center justify-center gap-1 md:gap-2 mt-8 ">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -52,10 +52,10 @@ export function Pagination({
         breakLabel="..."
         previousLabel={null}
         nextLabel={null}
-        containerClassName="flex items-center gap-0.5 md:gap-1"
-        pageClassName=""
-        pageLinkClassName="w-8 h-8 md:w-8 md:h-8 rounded-full text-sm transition-colors hover:bg-gray-50 flex items-center justify-center"
-        activeLinkClassName="bg-[#EAEAED]"
+        containerClassName="flex items-center gap-0.5 md:gap-1  mb-0!"
+        pageClassName=" "
+        pageLinkClassName="w-8 h-8 md:w-8 md:h-8 rounded-full text-sm transition-colors hover:bg-gray-50 flex items-center justify-center "
+        activeLinkClassName="bg-pagination-active"
         breakClassName="px-1 md:px-2 text-gray-400"
         disabledClassName="hidden"
       />
