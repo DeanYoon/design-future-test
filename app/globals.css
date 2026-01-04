@@ -10,6 +10,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans-jp);
   --font-mono: var(--font-noto-sans-jp);
+
+  /* Custom colors */
+  --color-primary: #4D4E58;
+  --color-primary-hover: #3D3E48;
+  --color-card-bg: #F5F5F5;
+  --color-badge-bg: #FFF1F3;
+  --color-badge-border: #FECDD6;
+  --color-border-light: #D5D7DA;
+  --color-pagination-active: #EAEAED;
 }
 
 body {
@@ -35,4 +44,42 @@ body {
 button,
 a {
   cursor: pointer;
+}
+
+/* Ant Design Tree (CircularFilter) - keep background white, remove hover darkening */
+.circular-tree .ant-tree-switcher {
+  display: none;
+}
+
+.circular-tree,
+.circular-tree .ant-tree,
+.circular-tree .ant-tree-list,
+.circular-tree .ant-tree-list-holder,
+.circular-tree .ant-tree-list-holder-inner {
+  background: transparent !important;
+}
+
+/* Make title area take full row width so our chevron sits at the far right */
+.circular-tree .ant-tree-node-content-wrapper,
+.circular-tree .ant-tree-node-content-wrapper-open,
+.circular-tree .ant-tree-title {
+  width: 100%;
+}
+
+.circular-tree .ant-tree-node-content-wrapper {
+  background: transparent !important;
+}
+
+
+
+/* Slightly tighter rows to match existing filter look */
+.circular-tree .ant-tree-treenode {
+  padding: 2px 0;
+}
+
+
+.circular-tree .ant-tree-treenode-switcher-close,
+.circular-tree .ant-tree-treenode-switcher-open,
+.circular-tree .ant-tree-treenode-checkbox-checked {
+  width: 100% !important;
 }

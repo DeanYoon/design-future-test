@@ -2,25 +2,17 @@ import { ProductList } from "@/components/product";
 import { getProducts } from "@/lib/api";
 
 export default async function Home() {
-  try {
-    const products = await getProducts();
+  const products = await getProducts();
 
-    // Expand 20 products by repeating 5 times to get 100 products
-    const expandedProducts = Array.from({ length: 5 }, (_, repeatIndex) =>
-      products.map((product, index) => ({
-        ...product,
-        id: repeatIndex * 20 + index + 1,
-      }))
-    ).flat();
+  // Expand 20 products by repeating 5 times to get 100 products
+  const expandedProducts = Array.from({ length: 5 }, (_, repeatIndex) =>
+    products.map((product, index) => ({
+      ...product,
+      id: repeatIndex * 20 + index + 1,
+    }))
+  ).flat();
 
-    return (
-      <ProductList products={expandedProducts} itemsPerPage={12} />
-    );
-  } catch (error) {
-    // Next.js error.tsx handles this automatically, but add additional logging
-    console.error("Page rendering error:", error);
-    throw error;
-  }
+  return <ProductList products={expandedProducts} itemsPerPage={12} />;
 }
 
 
