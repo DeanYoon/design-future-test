@@ -2,6 +2,7 @@
 
 import { ProductList } from "@/components/product";
 import { useProducts } from "@/hooks";
+import Loading from "./loading";
 
 export default function Home() {
   const { products, loading, error, refetch } = useProducts();
@@ -18,14 +19,7 @@ export default function Home() {
       : [];
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-          <p className="mt-4 text-gray-600">商品を読み込んでいます...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
