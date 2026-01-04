@@ -1,35 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ProductList } from "@/components/product";
-import type { Product } from "@/types/product";
-
-const API_BASE_URL = "https://fakestoreapi.com";
+import { useProducts } from "@/hooks";
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Client-side fetching - runs in user's browser
-    fetch(`${API_BASE_URL}/products`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`API returned ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data: Product[]) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch products:", err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+  const { products, loading, error, refetch } = useProducts();
 
   // Expand products
   const expandedProducts =
@@ -60,7 +35,7 @@ export default function Home() {
           <p className="text-red-600 font-bold">エラーが発生しました</p>
           <p className="text-gray-600 mt-2">{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={refetch}
             className="mt-4 px-4 py-2 bg-primary text-white rounded-full hover:bg-primary-hover"
           >
             再読み込み
