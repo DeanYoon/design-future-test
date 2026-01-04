@@ -1,60 +1,81 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Filter, Repeat } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { ProductCard } from "./product-card";
 import { Pagination } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
+import { ProductListHeader } from "./product-list-header";
+import { FilterContent } from "./filter-content";
+import { DEFAULT_SORT } from "@/lib/constants/sort";
+import { getActiveFilterCount } from "@/lib/utils/filter-counter";
+import { FilterProvider, useFilters } from "@/contexts/filter-context";
 import type { Product } from "@/types/product";
 
 interface ProductListProps {
     products: Product[];
     itemsPerPage?: number;
     searchTerm?: string;
-    filterCount?: number;
 }
 
-function ProductListHeader({
-    searchTerm,
-    totalCount,
-    filterCount,
-}: {
-    searchTerm?: string;
-    totalCount: number;
-    filterCount?: number;
-}) {
-    return (
-        <div className="flex flex-col gap-2 mb-6">
-            <div className="text-base">
-                <span className="text-gray-500">次の条件の検索結果:</span>
-                <span className="font-bold ml-2">
-                    {searchTerm || "TOPPAN"} ({totalCount})
-                </span>
-            </div>
-            <div className="flex gap-2 overflow-scroll">
-                <Button>
-                    フィルターを表示する ({filterCount ?? 2})
-                    <Filter className="w-4 h-4" />
-                </Button>
-                <Button>並べ替え: ブランドA-Z</Button>
-                <Button>
-                    比較
-                    <Repeat className="w-4 h-4" />
-                </Button>
-            </div>
-        </div>
-    );
-}
-
-export function ProductList({
+function ProductListContent({
     products,
-    itemsPerPage = 12,
     searchTerm,
-    filterCount,
 }: ProductListProps) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+    const [currentSort, setCurrentSort] = useState(DEFAULT_SORT);
+
+    // Use filter context instead of local state
+    const { searchQuery, selectedItems, toggleOn, filters } = useFilters();
+
+    // Responsive state - calculated once and passed to all children
+    const [isMobile, setIsMobile] = useState(false);
+    const [gridCols, setGridCols] = useState(2);
+    const [itemsPerPage, setItemsPerPage] = useState(12);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            const mobile = width < 768;
+            setIsMobile(mobile);
+
+            let cols = 2;
+            let items = 12;
+
+            if (width >= 1280) {
+                cols = 5;
+                items = 35; // 5 cols × 7 rows
+            } else if (width >= 1024) {
+                cols = 4;
+                items = 28; // 4 cols × 7 rows
+            } else if (width >= 768) {
+                cols = 3;
+                items = 18; // 3 cols × 6 rows
+            } else {
+                cols = 2;
+                items = 12; // 2 cols × 6 rows
+            }
+
+            setGridCols(cols);
+            setItemsPerPage(items);
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const totalPages = Math.ceil(products.length / itemsPerPage);
+
+    // Calculate active filter count
+    const filterCount = useMemo(
+        () =>
+            getActiveFilterCount(
+                searchQuery,
+                selectedItems,
+                toggleOn,
+                filters
+            ),
+        [searchQuery, selectedItems, toggleOn, filters]
+    );
 
     const paginatedProducts = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -73,20 +94,61 @@ export function ProductList({
                 searchTerm={searchTerm}
                 totalCount={products.length}
                 filterCount={filterCount}
+                sidebar={{
+                    isVisible: isSidebarVisible,
+                    onToggleVisibility: () => setIsSidebarVisible(!isSidebarVisible),
+                }}
+                sort={{
+                    currentSort,
+                    onSortChange: setCurrentSort,
+                }}
             />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {paginatedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                ))}
+            <div className="flex gap-6">
+                {/* Desktop Sidebar - Filter Only with Slide Animation */}
+                <aside
+                    className={`hidden transition-all duration-300 ease-in-out overflow-hidden ${isSidebarVisible
+                        ? "md:block w-64 shrink-0 opacity-100 translate-x-0"
+                        : "md:hidden w-0 opacity-0 -translate-x-full"
+                        }`}
+                >
+                    <div className="bg-white border-gray-200 rounded-lg overflow-hidden w-64">
+                        <div className="p-4 md:p-1">
+                            <FilterContent />
+                        </div>
+                    </div>
+                </aside>
+
+                {/* Product Grid */}
+                <div className="flex-1">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                        {paginatedProducts.map((product, idx) => (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                index={idx}
+                                isMobile={isMobile}
+                                gridCols={gridCols}
+                            />
+                        ))}
+                    </div>
+                    {totalPages > 1 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    )}
+                </div>
             </div>
-            {totalPages > 1 && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                />
-            )}
         </>
+    );
+}
+
+export function ProductList(props: ProductListProps) {
+    return (
+        <FilterProvider>
+            <ProductListContent {...props} />
+        </FilterProvider>
     );
 }
 
